@@ -18,35 +18,27 @@ juntamente com esta. Se não, veja <http://www.gnu.org/licenses/>
                        ralms@ralms.net  
 
 */
-using System.Drawing;
-using System.IO;
+
+using System.Collections.Generic; 
 using System.Windows.Forms;
 
-namespace Test.Forms
+namespace Client.Sefaz.Net
 {
-    public partial class frmCaptcha : Form
+    public static class HtmlExtensao
     {
-        public string DadosPagina = string.Empty;
-        private Client.Sefaz.Net.Api Api = null;
-        private string _Chave = string.Empty;
-        public frmCaptcha(string chave)
+        public static IEnumerable<HtmlElement> RetornarElementoPelaClasse(this HtmlDocument docNavegador, string nomeClasse)
         {
-            InitializeComponent();
-            Api = new Client.Sefaz.Net.Api(); 
-            using (var ms = new MemoryStream(Api.Captcha()))
-            {
-                pictureBox1.Image = Image.FromStream(ms);
-            }
-            _Chave = chave;
+            foreach (HtmlElement e in docNavegador.All)
+                if (e.GetAttribute("className") == nomeClasse)
+                    yield return e;
         }
 
-        private void txtCaptcha_KeyPress(object sender, KeyPressEventArgs e)
+        public static string ApenasNumeros(this string str)
         {
-            if(e.KeyChar == (char)Keys.Enter)
-            {
-                DadosPagina = Api.ConsultaToXml(_Chave, txtCaptcha.Text);
-                Close();
-            }
+            var somenteNumeros = new System.Text.RegularExpressions.Regex(@"[^\d]");
+            return somenteNumeros.Replace(str, "");
         }
     }
+
+
 }

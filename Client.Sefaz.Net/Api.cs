@@ -59,13 +59,7 @@ namespace Client.Sefaz.Net
             return Convert.FromBase64String(navegador.Document.GetElementById("ctl00_ContentPlaceHolder1_imgCaptcha").GetAttribute("src").Replace("data:image/png;base64,", ""));
         }
 
-        internal static IEnumerable<HtmlElement> RetornarElementoPelaClass(HtmlDocument docNavegador, string nomeClasse)
-        {
-            foreach (HtmlElement e in docNavegador.All)
-                if (e.GetAttribute("className") == nomeClasse)
-                    yield return e;
-        }
-
+       
         public string ConsultaToHTML(string chave, string captcha)
         {
             DownloadPaginaConcluido = false;
@@ -81,7 +75,7 @@ namespace Client.Sefaz.Net
                 System.Threading.Thread.Sleep(100);
                 Application.DoEvents();
             }
-            var Elements = RetornarElementoPelaClass(navegador.Document, "indentacaoConteudo").ToList();
+            var Elements =  navegador.Document.RetornarElementoPelaClasse("indentacaoConteudo").ToList();
             return Elements[1].OuterHtml;
         }
 
@@ -100,24 +94,55 @@ namespace Client.Sefaz.Net
                 System.Threading.Thread.Sleep(100);
                 Application.DoEvents();
             }
-            var Elements = RetornarElementoPelaClass(navegador.Document, "indentacaoConteudo");
+            var Elements =  navegador.Document.RetornarElementoPelaClasse("indentacaoConteudo");
+            if (Elements == null)
+                return "Erro na consulta";
+
+            var Tags = Elements.ToList()[1].GetElementsByTagName("td"); 
+            foreach (HtmlElement tag in Tags)
+            {
+                if (tag.Children.Count == 1)
+                    Console.Out.WriteLine($"---> <b>{tag.Children[0].InnerText}:</b>&nbsp;<br>");
+
+                if (tag.Children.Count > 1)
+                    Console.Out.WriteLine($"<b>{tag.Children[0].InnerText}:</b>&nbsp;{tag.Children[1].InnerText}<br>");
+            }
+
+            var Xml = new XmlHelper(Elements).GetNFe();
+            return Xml.OuterXml;
+        }
+
+        public string ConsultaToXml(string chave, string captcha)
+        {
+            DownloadPaginaConcluido = false;
+            navegador.Document.GetElementById("ctl00_ContentPlaceHolder1_txtCaptcha").SetAttribute("value", captcha);
+            navegador.Document.GetElementById("ctl00_ContentPlaceHolder1_txtChaveAcessoCompleta").SetAttribute("value", chave);
+            navegador.DocumentCompleted += delegate
+            {
+                DownloadPaginaConcluido = true;
+            };
+            navegador.Document.GetElementById("ctl00_ContentPlaceHolder1_btnConsultar").InvokeMember("click");
+            while (!DownloadPaginaConcluido)
+            {
+                System.Threading.Thread.Sleep(100);
+                Application.DoEvents();
+            }
+            var Elements = navegador.Document.RetornarElementoPelaClasse("indentacaoConteudo");
             if (Elements == null)
                 return "Erro na consulta";
 
             var Tags = Elements.ToList()[1].GetElementsByTagName("td");
-            StringBuilder TagsNF = new StringBuilder();
             foreach (HtmlElement tag in Tags)
             {
                 if (tag.Children.Count == 1)
-                    TagsNF.Append($"---> <b>{tag.Children[0].InnerText}:</b>&nbsp;<br>");
+                    Console.Out.WriteLine($"---> <b>{tag.Children[0].InnerText}:</b>&nbsp;<br>");
 
                 if (tag.Children.Count > 1)
-                    TagsNF.Append($"<b>{tag.Children[0].InnerText}:</b>&nbsp;{tag.Children[1].InnerText}<br>");
+                    Console.Out.WriteLine($"<b>{tag.Children[0].InnerText}:</b>&nbsp;{tag.Children[1].InnerText}<br>");
             }
 
-
-            return TagsNF.ToString();
+            var Xml = new XmlHelper(Elements).GetNFe();
+            return Xml.OuterXml;
         }
-
     }
 }

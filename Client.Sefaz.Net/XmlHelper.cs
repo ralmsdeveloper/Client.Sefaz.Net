@@ -19,6 +19,12 @@ juntamente com esta. Se não, veja <http://www.gnu.org/licenses/>
 
 */
 
+using System.Text;
+using System.Windows.Forms;
+using System.Xml;
+using System.Linq;
+using System.Collections.Generic;
+
 namespace Client.Sefaz.Net
 {
     /// <summary>
@@ -26,5 +32,57 @@ namespace Client.Sefaz.Net
     /// </summary>
     public class XmlHelper
     {
+        private XmlDocument NFeXML { get; set; } 
+        private IEnumerable<HtmlElement> HTML { get; set; }
+        /// <summary>
+        /// Inicializador de Objeto
+        /// </summary>
+        /// <param name="html"></param>
+        public XmlHelper(IEnumerable<HtmlElement> html)
+        {
+            this.HTML = html;
+            this.NFeXML = new XmlDocument();
+        }
+        /// <summary>
+        /// Tag NF- Principal
+        /// </summary>
+        /// <returns></returns>
+        public XmlDocument GetNFe()
+        { 
+            var Tags = HTML.ToList()[1].GetElementsByTagName("td");
+            StringBuilder TagsNF = new StringBuilder();
+
+            var ChaveAcesso = Tags[0].Children[1].InnerText.ApenasNumeros();
+            StringBuilder scope = new StringBuilder();
+            scope.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            scope.Append("<nfeProc versao =\"3.10\" xmlns=\"http://www.portalfiscal.inf.br/nfe\">");
+            scope.Append("  <NFe xmlns =\"http://www.portalfiscal.inf.br/nfe\">");
+            scope.Append($"      <infNFe versao =\"3.10\" Id=\"NFe{ChaveAcesso}\">");
+            scope.Append("          <ide></ide>");
+            scope.Append("          <emit></emit>");
+            scope.Append("          <dest></dest>");
+            scope.Append("          <autXML></autXML>");
+            scope.Append("          <det></det>");
+            scope.Append("          <total></total>");
+            scope.Append("          <transp></transp>");
+            scope.Append("          <cobr></cobr>");
+            scope.Append("          <infAdic></infAdic>");
+            scope.Append("      </infNFe>");
+            scope.Append("      <Signature></Signature>");
+            scope.Append("  </NFe>");
+            scope.Append("  <protNFe></protNFe>");
+            scope.Append("</nfeProc>");
+            NFeXML.LoadXml(scope.ToString());
+            return NFeXML;
+        }
+
+        /// <summary>
+        /// Tag Identificação
+        /// </summary>
+        /// <returns></returns>
+        public XmlDocument GetIdentificacao()
+        { 
+            return NFeXML;
+        }
     }
 }
