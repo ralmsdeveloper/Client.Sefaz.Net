@@ -11,7 +11,7 @@ using (var ms = new MemoryStream(Api.Captcha()))
 
 ```C#
 var DadosPagina = Api.ConsultaToXml(_Chave, txtCaptcha.Text);
-```ruby
+```
 
 ![alt text](http://ralms.net/img_git/Consulta.png)
 
