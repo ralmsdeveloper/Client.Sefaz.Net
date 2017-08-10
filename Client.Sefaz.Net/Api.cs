@@ -19,11 +19,9 @@ juntamente com esta. Se não, veja <http://www.gnu.org/licenses/>
 
 */
 
-using System;
-using System.Collections.Generic;
+using System; 
 using System.Windows.Forms;
-using System.Linq;
-using System.Text;
+using System.Linq; 
 
 namespace Client.Sefaz.Net
 {
