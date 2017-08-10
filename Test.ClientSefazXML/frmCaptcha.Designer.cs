@@ -35,6 +35,7 @@
             // 
             // txtCaptcha
             // 
+            this.txtCaptcha.BackColor = System.Drawing.Color.SpringGreen;
             this.txtCaptcha.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCaptcha.Location = new System.Drawing.Point(-1, 56);
             this.txtCaptcha.Name = "txtCaptcha";
@@ -44,6 +45,7 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox1.Location = new System.Drawing.Point(-1, -1);
@@ -56,7 +58,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(212, 92);
             this.Controls.Add(this.txtCaptcha);
             this.Controls.Add(this.pictureBox1);

@@ -51,11 +51,21 @@ namespace Client.Sefaz.Net
                 DownloadPaginaConcluido = true;
             };
             navegador.Navigate("https://www.nfe.fazenda.gov.br/portal/consulta.aspx?tipoConsulta=completa&tipoConteudo=XbSeqxE8pl8=");
-            while (!DownloadPaginaConcluido)
+            lock(navegador)  
             {
-                System.Threading.Thread.Sleep(100);
-                Application.DoEvents();
+                while (!DownloadPaginaConcluido)
+                {
+                    System.Threading.Thread.Sleep(500);
+                    try
+                    {
+                        Application.DoEvents();
+                    }
+                    catch 
+                    {
+                    } 
+                }
             }
+            
             return Convert.FromBase64String(navegador.Document.GetElementById("ctl00_ContentPlaceHolder1_imgCaptcha").GetAttribute("src").Replace("data:image/png;base64,", ""));
         }
 

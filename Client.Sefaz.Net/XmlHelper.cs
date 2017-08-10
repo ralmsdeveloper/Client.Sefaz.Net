@@ -50,17 +50,46 @@ namespace Client.Sefaz.Net
         public XmlDocument GetNFe()
         { 
             var Tags = HTML.ToList()[1].GetElementsByTagName("td");
-            StringBuilder TagsNF = new StringBuilder();
+            var Trs = HTML.ToList()[1].GetElementsByTagName("tr");
+            var TagsNF = new StringBuilder();
+            var IDE = new StringBuilder();
+            foreach (HtmlElement tr in Trs)
+            {
+                foreach (HtmlElement elemento in tr.GetElementsByTagName("td"))
+                {
+                    if (elemento.Children.Count < 2)
+                        continue;
 
+                    switch (elemento.FirstChild.InnerText)
+                    {
+                        case "Modelo":
+                            IDE.Append($"<mod>{elemento.Children[1].InnerText}</mod>");
+                            break;
+                        case "Série":
+                            IDE.Append($"<serie>{elemento.Children[1].InnerText}</serie>");
+                            break;
+                        case "Número":
+                            IDE.Append($"<nNF>{elemento.Children[1].InnerText}</nNF>");
+                            break;
+                        case "Data de Emissão":
+                            IDE.Append($"<dhEmi>{elemento.Children[1].InnerText}</dhEmi>");
+                            break;
+
+                    }
+                } 
+            }
             var ChaveAcesso = Tags[0].Children[1].InnerText.ApenasNumeros();
             StringBuilder scope = new StringBuilder();
             scope.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             scope.Append("<nfeProc versao =\"3.10\" xmlns=\"http://www.portalfiscal.inf.br/nfe\">");
             scope.Append("  <NFe xmlns =\"http://www.portalfiscal.inf.br/nfe\">");
             scope.Append($"      <infNFe versao =\"3.10\" Id=\"NFe{ChaveAcesso}\">");
-            scope.Append("          <ide></ide>");
+            scope.Append("          <ide>");
+            scope.Append($"          {IDE}");
+            scope.Append("          </ide>");
             scope.Append("          <emit></emit>");
-            scope.Append("          <dest></dest>");
+            scope.Append("          <dest>"); 
+            scope.Append("          </dest>");
             scope.Append("          <autXML></autXML>");
             scope.Append("          <det></det>");
             scope.Append("          <total></total>");
