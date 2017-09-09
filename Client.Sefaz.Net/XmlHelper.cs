@@ -49,6 +49,7 @@ namespace Client.Sefaz.Net
         /// <returns></returns>
         public XmlDocument GetNFe()
         { 
+          
             var Tags = HTML.ToList()[1].GetElementsByTagName("td");
             var Trs = HTML.ToList()[1].GetElementsByTagName("tr");
             var TagsNF = new StringBuilder();
@@ -94,6 +95,7 @@ namespace Client.Sefaz.Net
         /// <returns></returns>
         public Dictionary<int,string> GetIdentificacao()
         {
+          
             var dicionario = new Dictionary<int, string>();
             var Trs = HTML.ToList()[1].GetElementsByTagName("tr"); 
             foreach (HtmlElement tr in Trs)
@@ -176,6 +178,7 @@ namespace Client.Sefaz.Net
 
         public string GetEmitenteEndereco()
         {
+          
             var dicionario = new Dictionary<int, string>();
             var Trs = HTML.ToList()[1].GetElementsByTagName("tr");
             foreach (HtmlElement tr in Trs)
